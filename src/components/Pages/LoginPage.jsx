@@ -2,15 +2,17 @@ import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import {Form, Button, ButtonGroup} from "react-bootstrap";
 import {employees} from "../../data"
+import {languages} from "../../language";
 
 const LoginPage = () => {
 
   const {register, handleSubmit} = useForm();
   const [language, setLanguage] = useState("sk");
   const [loginError, setLoginError] = useState("");
-
+  var idLanguage =1
   const changeLanguage = (event) => {
     console.log(`language: ${event.target.id}`);
+    idLanguage = event.target.id
     setLanguage(event.target.id);
     // TODO JOZO translate and set lang cookie
   }
@@ -33,7 +35,11 @@ const LoginPage = () => {
       e.name === data.name && e.pass === data.password
     );
   }
-
+  const findLanguageLabel = (label, language) => {
+    // TODO from database?
+    var l = languages.find((e) => e.id === language);
+    return l[label]
+  }
   const active = (id) => {
     return language === id && 'active';
   }
@@ -46,7 +52,7 @@ const LoginPage = () => {
     // TODO JOZO style login form
     <Form onSubmit={handleSubmit(onSubmit)}>
 
-      <h3 align="center">Login</h3>
+      <h3 align="center">{findLanguageLabel("Login", idLanguage)}</h3>
 
       <ButtonGroup onClick={changeLanguage} className="btn-header">
         <Button id="sk" className={active("sk")}>Slovak</Button>
@@ -57,7 +63,7 @@ const LoginPage = () => {
 
       {/* NAME */}
       <Form.Group className="form-group">
-        <Form.Label>Name</Form.Label>
+        <Form.Label>{findLanguageLabel("Name", idLanguage)}</Form.Label>
         <Form.Control
           name="name"
           placeholder="Enter login name"
@@ -68,11 +74,11 @@ const LoginPage = () => {
 
       {/* NAME */}
       <Form.Group className="form-group">
-        <Form.Label>Password</Form.Label>
+        <Form.Label>{findLanguageLabel("Password", idLanguage)}</Form.Label>
         <Form.Control
           name="password"
           type="password"
-          placeholder="Enter login password"
+          placeholder={findLanguageLabel("PasswordToFill", idLanguage)}
           ref={register}
           required
         />

@@ -1,8 +1,3 @@
-.btn-header {
-    margin: 2rem auto;
-    width: 100%;
-}
-
 body {
     padding-bottom: 1rem;
 }
@@ -10,6 +5,10 @@ body {
 .nav-pills .nav-link.active {
     background-color: #f3c404f2 !important;
     color: black !important;
+}
+
+.nav-link {
+    color: #ffffff !important;
 }
 
 .login-container {
@@ -23,8 +22,21 @@ body {
     margin-top: 60px;
 }
 
-.inner-table{
+.inner-table {
     background-color: #ececec;
+}
+
+/*.skill-matrix-table td:not(:first-child){*/
+/*    padding: 0 !important;*/
+/*}*/
+
+.skill-matrix-table td {
+    padding: 0 !important;
+}
+
+.skill-matrix-table td:first-child {
+    padding: 10px 0 0 10px !important;
+    line-height: 20px !important;
 }
 
 /*.sticky-nav {*/
@@ -32,16 +44,19 @@ body {
 /*    top: 0;*/
 /*}*/
 
-/*.btn {*/
-/*    background-color: #f3c404f2 !important;*/
-/*    border-color: white !important;*/
-/*    color: black !important;*/
-/*}*/
-
 .btn-group>.btn {
     background-color: #343a40 !important;
     border-color: white !important;
-    color: white !important;
+    /*color: white !important;*/
+}
+
+.btn-group>.btn:not(:last-child) {
+    margin-right: 2px;
+}
+
+.btn-header {
+    margin: 2rem auto;
+    width: 100%;
 }
 
 .btn-group>.btn:active,
@@ -52,8 +67,12 @@ body {
     color: black !important;
 }
 
-.div-btn>.btn {
-    background-color: #343a40 !important;
-    border-color: white !important;
-    margin-right: 2px;
+.dropdown {
+    margin-left: 5px !important;
+}
+
+.btn-light {
+    color: black !important;
+    background-color: white !important;
+    border-color: gray !important;
 }

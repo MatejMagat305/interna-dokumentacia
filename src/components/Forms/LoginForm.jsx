@@ -1,7 +1,7 @@
 import React from "react";
 import {useForm} from "react-hook-form";
 import {Button, ButtonGroup, Form, Container} from "react-bootstrap";
-import {ErrorMessage} from "../Others/ErrorMessage";
+import {ErrorAlert} from "../Others/ErrorAlert";
 
 const LoginForm = ({onSubmit, language, setLanguage, loginError}) => {
 
@@ -44,7 +44,7 @@ const LoginForm = ({onSubmit, language, setLanguage, loginError}) => {
           />
         </Form.Group>
         {/* ERRORS */}
-        { loginError && <ErrorMessage text={loginError}/> }
+        { loginError && <ErrorAlert text={loginError}/> }
         {/* SUBMIT BTN */}
         <Button type="submit" variant="dark" className="btn-block">Login</Button>
       </Form>

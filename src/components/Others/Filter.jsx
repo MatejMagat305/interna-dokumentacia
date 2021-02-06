@@ -62,7 +62,7 @@ const Filter = () => {
   }
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit} className="pt-3 pb-3 pr-0 d-flex justify-content-md-center" style={{float: "right"}}>
       <Row>
         <DropdownMultiselect
           name="type"

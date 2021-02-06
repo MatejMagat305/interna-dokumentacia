@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import MyHookForm from "./MyHookForm";
-import {Row, Col, Form, Button, ButtonGroup} from "react-bootstrap";
+import {Row, Col, Form, Button} from "react-bootstrap";
 import {Typeahead} from 'react-bootstrap-typeahead'
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import {employees} from "../../data";
@@ -91,12 +91,12 @@ const TrainingForm = ({data}) => {
 
       {/* LIST OF EMPLOYEES */}
       <Form.Group as={Row}>
-        <Form.Label column sm="2">Add employees</Form.Label>
+        <Form.Label column sm="2">Add employees*</Form.Label>
         <Col>
           <Typeahead
             id="basic-typeahead-single"
             name="employees"
-            labelKey="name"
+            labelKey={option => `${option.name} [${option.anet_id}]`}
             multiple
             onChange={setAttendees}
             options={employees}

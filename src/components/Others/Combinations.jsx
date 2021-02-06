@@ -1,11 +1,11 @@
 import React, {useState} from "react";
 import BootstrapTable from "react-bootstrap-table-next";
-import {PlusSquare, DashSquare} from 'react-bootstrap-icons';
+import {PlusSquare, XSquare} from 'react-bootstrap-icons';
 import CombinationModal from "../Modals/CombinationModal";
 import EmptyTable from "../Tables/EmptyTable";
 import Button from "react-bootstrap/Button";
 
-const Combinations = ({combinations, setCombinations}) => {
+const Combinations = ({combinations, setCombinations, setReq}) => {
 
   const [showModal, setShowModal] = useState(false)
 
@@ -15,13 +15,13 @@ const Combinations = ({combinations, setCombinations}) => {
 
   const DeleteIcon = (cell, c) => {
     return (
-      <DashSquare size="25" color="red" onClick={() => deleteCombination(c)}/>
+      <XSquare size="25" color="red" onClick={() => deleteCombination(c)}/>
     )
   };
 
   const AddIcon = () => {
     return (
-      <Button variant="success" onClick={() => setShowModal(true)}>
+      <Button variant="success" onClick={() => setShowModal(true)} size="sm">
         <strong>Add combination {" "}</strong>
         <PlusSquare size="20" color="white"/>
       </Button>
@@ -65,6 +65,7 @@ const Combinations = ({combinations, setCombinations}) => {
         setShowModal={setShowModal}
         combinations={combinations}
         setCombinations={setCombinations}
+        setReq={setReq}
       />
       }
       <hr/>

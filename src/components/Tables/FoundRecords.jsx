@@ -7,6 +7,7 @@ import DocumentForm from "../Forms/DocumentForm";
 import TrainingForm from "../Forms/TrainingForm";
 import SavedRecords from "./SavedRecords";
 import EditRecordModal from "../Modals/EditRecordModal";
+import ReportBtn from "../Buttons/ReportBtn";
 
 const FoundRecords = () => {
 
@@ -33,7 +34,7 @@ const FoundRecords = () => {
       dataField: 'city',
       text: 'City'
     }, {
-      dataField: 'recordType',
+      dataField: 'record_type',
       text: 'Record Type'
     }, {
       dataField: 'state',
@@ -49,8 +50,8 @@ const FoundRecords = () => {
       headerStyle: () => {return {width: '1%'}}
     }, {
       dataField: 'skillMatrix',
-      text: 'SkillMatrix',
-      formatter: SMBtn,
+      text: 'Report',
+      formatter: ReportBtn,
       headerStyle: () => { return {width: '1%'} }
     }
   ];
@@ -70,6 +71,8 @@ const FoundRecords = () => {
         hover
         data={docs}
         columns={columns}
+        wrapperClasses="table-responsive"
+        rowClasses="text-nowrap"
       />
       {formType === 'new_document' &&
         <EditRecordModal

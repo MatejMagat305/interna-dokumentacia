@@ -4,7 +4,7 @@ import DocumentForm from "../Forms/DocumentForm";
 import TrainingForm from "../Forms/TrainingForm";
 import SavedRecords from "../Tables/SavedRecords";
 
-const AddRecordPage = (props) => {
+const AddRecordPage = () => {
 
   const [formType, setFormType] = useState('new_document');
   const [formData, setFormData] = useState({});
@@ -17,7 +17,7 @@ const AddRecordPage = (props) => {
 
   return (
     <Container className="w-80">
-      <ButtonGroup onClick={handleClick} className="btn-header">
+      <ButtonGroup onClick={handleClick} className="btn-group btn-header">
         <Button id="new_document" className={active("new_document")}>Document</Button>
         <Button id="new_training" className={active("new_training")}>Online training</Button>
         <Button id="editable_docs" className={active("editable_docs")}>Saved records</Button>

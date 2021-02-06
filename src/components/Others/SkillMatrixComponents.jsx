@@ -20,12 +20,12 @@ export const RowButtons = ({setEvent, setShowModal, handleAccept, handleExport})
         <Button id="export" variant="dark" onClick={handleExport}>Export</Button>
       </Col>
       <Col className="text-right">
-        <div onClick={handleClick} className="div-btn">
-          <Button id="sign" className="mr-1">Sign</Button>
-          <Button id="cancelDuty" className="mr-1">Cancel duty</Button>
-          <Button id="trainAgain" className="mr-1">Train again</Button>
-          <Button id="cancel"> Cancel </Button>
-        </div>
+        <ButtonGroup className="div-btn" onClick={handleClick}>
+          <Button id="sign">Sign</Button>
+          <Button id="cancelDuty">Cancel duty</Button>
+          <Button id="trainAgain">Train again</Button>
+          <Button id="cancel" onClick={handleClick}>Cancel</Button>
+        </ButtonGroup>
       </Col>
     </Row>
   )
@@ -54,13 +54,14 @@ export const Legend = () => {
   // }
 
   return (
-    <Container className="pt-5 pl-0">
+    <Container className="pt-5 pl-0" style={{marginTop: "3rem"}}>
       <h5 className="pb-2">Legend:</h5>
-      <p><Button style={style("gray")} size="sm">No need</Button>{' '}Zamestnanec bol odznačený z potreby oboznámenia alebo sa ho dokument netýka</p>
-      <p><Button style={style("red")} size="sm">miss e+s</Button>{' '}Ani zamestnanec ani nadriadený ešte nepotvrdili</p>
+      <p><Button style={style("gray")} size="sm">no need</Button>{' '}Zamestnanec bol odznačený z potreby oboznámenia alebo sa ho dokument netýka</p>
+      <p><Button style={style("tomato")} size="sm">miss e+s</Button>{' '}Ani zamestnanec ani nadriadený ešte nepotvrdili</p>
       <p><Button style={style("orange")} size="sm">miss e</Button>{' '}Zamestnanec nepotvrdil</p>
-      <p><Button style={style("yellow", "black")} size="sm">miss s</Button>{' '}Nadriadený nepotvrdil</p>
-      <p><Button style={style("green")} size="sm">done</Button>{' '}Dokument je potvrdený</p>
+      <p><Button style={style("gold", "black")} size="sm">miss s</Button>{' '}Nadriadený nepotvrdil</p>
+      <p><Button style={style("green")} size="sm">well done</Button>{' '}Dokument je potvrdený</p>
+      <p><Button style={style("cornflowerblue")} size="sm">not sent</Button>{' '}Este neodoslane</p>
       <p>hviezdička <strong>*</strong> znamena, ze zamestnanec sa opakovane preškoluje</p>
       <p><ExclamationTriangle style={{color: "red"}}/>{' '}Uplynul deadline a chýbajú podpisy</p>
     </Container>

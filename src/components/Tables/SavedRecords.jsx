@@ -2,26 +2,29 @@ import React, {useState} from "react";
 import BootstrapTable from 'react-bootstrap-table-next';
 import EditBtn from "../Buttons/EditBtn";
 import EmptyTable from "./EmptyTable";
-import {docs} from "../../data";
+import {dbdocs} from "../../data";
 import SendBtn from "../Buttons/SendBtn";
 import {Alert} from "react-bootstrap";
+import {FormattedDeadline, FormattedRelease} from "../Others/DateFormatter";
 
 const SavedRecords = ({setFormType, setFormData}) => {
 
   const [msg, setMsg] = useState()
 
   // TODO MATO get editable documents from DB
-  const editable_docs = docs;
+  const [editable_docs, setEditable_docs] = useState(dbdocs);
 
   const columns = [{
       dataField: 'name',
       text: 'Name'
     }, {
-      dataField: 'release',
-      text: 'Release'
+      dataField: 'release.Time',
+      text: 'Release',
+      formatter: FormattedRelease,
     }, {
-      dataField: 'deadline',
-      text: 'Deadline'
+      dataField: 'deadline.Time',
+      text: 'Deadline',
+      formatter: FormattedDeadline,
     }, {
       dataField: 'editBtn',
       text: 'Edit',
@@ -37,7 +40,9 @@ const SavedRecords = ({setFormType, setFormData}) => {
       formatter: SendBtn,
       formatExtraData: {
         data: editable_docs,
-        setMsg: setMsg
+        setMsg: setMsg,
+        editable_docs: editable_docs,
+        setEditable_docs: setEditable_docs
       },
       headerStyle: () => { return {width: '1%'} }
     }
@@ -52,9 +57,7 @@ const SavedRecords = ({setFormType, setFormData}) => {
         columns={columns}
         noDataIndication={EmptyTable}
       />
-      {msg && // TODO
-        <Alert variant='success'>{msg}</Alert>
-      }
+      {msg && <Alert variant='success'>{msg}</Alert>}
     </>
   )
 }

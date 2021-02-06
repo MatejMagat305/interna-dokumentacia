@@ -3,23 +3,26 @@ import React, {useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
 import MyHookForm from "./MyHookForm";
 import Combinations from "../Others/Combinations";
-import {ErrorMessage} from "../Others/ErrorMessage";
+import {ErrorAlert} from "../Others/ErrorAlert";
 import {proxy, types} from "../../data";
 import {getSelectOptions} from "../../functions";
+import {SuccessAlert} from "../Others/SuccessAlert";
 
 const DocumentForm = ({form_data}) => {
-
-  const {register, handleSubmit, errors} = useForm({
+  console.log('form_data', form_data)
+  const {register, handleSubmit, errors, reset} = useForm({
     defaultValues: {...form_data, deadline: 14}
   });
 
   const [combinations, setCombinations] = useState([])
+  const [emptyCombinations, setEmptyCombinations] = useState([true])
 
   const [error, setError] = useState(null)
-  useEffect(() => setError(""), combinations)
+  const [successMessage, setSuccessMessage] = useState(null)
+  useEffect(()=>setError(""), emptyCombinations)
 
   const onSubmit = (data, event) => {
-    if (combinations.length === 0){
+    if (emptyCombinations[0] || combinations.length === 0){
       setError("At least one combination is required")
       return
     }
@@ -31,7 +34,12 @@ const DocumentForm = ({form_data}) => {
     const doc_id = insertDocument(data)
     if (event.target.id === "send"){
       sendDocument(doc_id)
+      setSuccessMessage("Document was successfully sent")
+    } else {
+      setSuccessMessage("Document was successfully saved")
     }
+
+    reset({})
   }
 
   const insertDocument = (data) => {
@@ -61,7 +69,7 @@ const DocumentForm = ({form_data}) => {
   }
 
   return (
-    <Form>
+    <Form onChange={()=>setSuccessMessage("")}>
 
       {/* TYPE OF DOCUMENT */}
       <Form.Group as={Row}>
@@ -71,16 +79,16 @@ const DocumentForm = ({form_data}) => {
             as="select"
             name="type"
             ref={register({validate: v => v !== ""})}
-            // ref={register}
           >
+            <option hidden value="">Select option ...</option>
             {getSelectOptions(types)}
           </Form.Control>
-          { errors.doc_type && <ErrorMessage text={"Select a type"}/> }
         </Col>
       </Form.Group>
+      {/*{ errors.type && <ErrorAlert text={"Select a type"}/> }*/}
 
       <Form.Group as={Row}>
-        <Form.Label column sm="2">Require superior</Form.Label>
+        <Form.Label column sm="2">Require superior*</Form.Label>
         <Col>
           <Form.Check
             type="radio"
@@ -109,29 +117,27 @@ const DocumentForm = ({form_data}) => {
         label="Document name*"
         name="name"
         placeholder="Enter document name"
-        ref={register({required:true})}
-        // required={true}
-        // ref={register}
+        register={register({required:true})}
+        required={true}
       />
-      { errors.name && <ErrorMessage/> }
+      {/*{ errors.name && <ErrorAlert/> }*/}
 
       {/* LINK */}
       <MyHookForm
         label="Link to sharepoint"
         name="link"
         placeholder="Enter document link to sharepoint"
-        ref={register}
+        register={register}
       />
 
       {/* RELEASE */}
       <MyHookForm
         label="Release date*"
-        name="release_date"
+        name="release"
         type="date"
-        // ref={register({required:true})}
-        ref={register}
+        register={register({required:true})}
       />
-      { errors.date && <ErrorMessage/> }
+      {/*{ errors.release && <ErrorAlert/> }*/}
 
       {/* DEADLINE */}
       <MyHookForm
@@ -139,31 +145,28 @@ const DocumentForm = ({form_data}) => {
         name="deadline"
         type="number"
         defaultValue="14"
-        // ref={register({required:true})}
-        ref={register}
+        register={register({required:true})}
       />
-      { errors.number && <ErrorMessage/> }
+      {/*{ errors.number && <ErrorAlert/> }*/}
 
       {/* VERSION */}
       <MyHookForm
         label="Version*"
         name="version"
         placeholder="Enter version"
-        // ref={register({required:true})}
-        ref={register}
+        register={register({required:true})}
       />
-      { errors.version && <ErrorMessage/> }
+      {/*{ errors.version && <ErrorAlert/> }*/}
 
       {/* ORDER NUMBER */}
       <MyHookForm
         label="Order number*"
-        name="order_number"
+        name="number"
         type="number"
         placeholder="Enter number"
-        // register={register({required:true})}
-        register={register}
+        register={register({required:true})}
       />
-      { errors.number && <ErrorMessage/> }
+      {/*{ errors.number && <ErrorAlert/> }*/}
 
       {/* NOTE */}
       <MyHookForm
@@ -175,15 +178,18 @@ const DocumentForm = ({form_data}) => {
       />
 
       {/* COMBINATIONS */}
-      <Combinations combinations={combinations} setCombinations={setCombinations}/>
-      { error && <ErrorMessage text={error}/> }
+      <Combinations combinations={combinations} setCombinations={setCombinations} setReq={setEmptyCombinations}/>
+
+      {/* ALERTS */}
+      { error && <ErrorAlert text={error}/> }
+      { Object.keys(errors).length ? <ErrorAlert text={"Fill all the require fields"}/> : null }
+      { successMessage && <SuccessAlert text={successMessage}/> }
 
       {/* SAVE | SEND BUTTONS */}
       <div onClick={handleSubmit(onSubmit)} className="pt-1 btn-block text-right">
         <Button id="save" type="submit" className="mr-1">Save</Button>
         <Button id="send" type="submit" variant="danger">Send</Button>
       </div>
-
     </Form>
   )
 }

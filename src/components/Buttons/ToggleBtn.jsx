@@ -1,11 +1,12 @@
 import React from "react";
 import {Button} from "react-bootstrap";
 
+// FIXME JANO
 const ToggleBtn = (c, row, rowIndex, {data, setData, id}) => {
 
   const document = data[rowIndex]
-  const signature = document.signatures[id]
-  let state = getState(signature);
+  const anet_id = document.employees[id].anet_id;
+  let state = document.employees[id].state;
   const mark = state.includes('X');
   if (mark) state = unMarkState();
 
@@ -24,66 +25,57 @@ const ToggleBtn = (c, row, rowIndex, {data, setData, id}) => {
   const handleClick = () => {
     const stt = mark ? unMarkState() : markState()
 
-    const new_signatures = [...document.signatures];
-    new_signatures[id] = {
-      ...new_signatures[id],
+    const new_employees = [...document.employees];
+    new_employees[id] = {
+      anet_id: anet_id,
       state: stt
     };
     console.log(stt)
     const new_data = [...data];
-    new_data[rowIndex] = {...document, signatures: new_signatures};
+    new_data[rowIndex] = {...document, employees: new_employees};
 
     setData(new_data);
   }
 
+  const getColor = (state) => {
+    switch (state){
+      case "-": return 'gray'
+      case "_": return 'cornflowerblue'
+      case "es": return 'tomato'
+      case "e": return 'orange'
+      case "s": return 'gold'
+      default: return 'green'
+    }
+  }
+
+  const getTextColor = (state) => state === "s" ? "black" : "white"
+
+  const getLabel = () => {
+    // TODO create better labels
+    const labels = [
+      {state: "-", label: "no need"},
+      {state: "es", label: "miss e+s"},
+      {state: "e", label: "miss e"},
+      {state: "s", label: "miss s"},
+      {state: "", label: "well done"},
+      {state: "X", label: "bug"},
+      {state: "_", label: "not send"},
+    ]
+    return labels.find(l => l.state === state).label
+  }
+
   const styledBtn = {
     backgroundColor: getColor(state),
+    color: getTextColor(state),
     borderColor: mark ? "black" : "white",
     borderWidth: "5px",
   }
 
   return (
-    <Button style={styledBtn} onClick={handleClick}>
-      {getLabel(state)}
+    <Button style={styledBtn} onClick={handleClick} className="btn-block">
+      {getLabel()}
     </Button>
   )
 }
 
 export default ToggleBtn;
-
-
-const getState = (signature) => { // TODO TEST
-  if (signature.cancel) {
-    return "-"
-  }
-  if (signature.training) {
-    if (signature.s_date === null && signature.e_date === null) return "es"
-    if (signature.s_date === null && signature.e_date !== null) return "s"
-  }
-  if (signature.e_date === null) {
-    return "e"
-  }
-  return ""
-}
-
-const getColor = (state) => {
-  switch (state){
-    case "-": return 'gray'
-    case "es": return 'red'
-    case "e": return 'orange'
-    case "s": return 'golden'
-    default: return 'green'
-  }
-}
-
-const getLabel = (state) => {
-  // TODO create better labels
-  return [
-    {state: "-", label: "no needed"},
-    {state: "es", label: "miss e+s"},
-    {state: "e", label: "miss e"},
-    {state: "s", label: "miss s"},
-    {state: "", label: "well done"},
-    {state: "X", label: "some bug"},
-  ].find(l => l.state === state).label
-}

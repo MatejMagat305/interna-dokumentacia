@@ -14,7 +14,7 @@ import {
   prefillTrainingForm
 } from "../../helpers/functions";
 
-const TrainingForm = ({formData, handleDatabase}) => {
+const TrainingForm = ({formData, actual}) => {
   const {register, handleSubmit, errors, reset} = useForm({
     defaultValues: prefillTrainingForm(trn_form) // TODO ME - prefill employees
     // defaultValues: prefillDocumentForm(formData)

@@ -1,18 +1,21 @@
-import {Button} from "react-bootstrap";
 import React from "react";
-import {recordType, successResponse} from "../../helpers/functions";
+import Button from "react-bootstrap/Button";
+import {badMsg, goodMsg, successResponse} from "../../helpers/functions";
 
 const SendBtn = (cell, row, index, {setSavedRec, setNotification}) => {
 
+  /** Send record to relevant employees */
   const handleClick = () => {
     console.log('sending', row)
-    sendRecord()
+    fetch(`/confirm/${row.id}`, {
+      method: "GET",
+    })
       .then(res => {
         if (successResponse(res)){
           updateSavedRec()
-          successMsg()
+          setNotification(goodMsg(`Record ${row.name} was successfully sent`))
         } else {
-          errorMsg()
+          setNotification(badMsg(`Sending the ${row.name} failed`))
         }
       })
       .catch((e) => console.log(e))
@@ -20,28 +23,6 @@ const SendBtn = (cell, row, index, {setSavedRec, setNotification}) => {
 
   const updateSavedRec = () => {
     setSavedRec(prev => prev.filter(doc => doc.id !== row.id));
-  }
-
-  const successMsg = () => {
-    setNotification({
-      variant: 'success',
-      body: `Record ${row.name} was successfully sent`
-    })
-  }
-
-  const errorMsg = () => {
-    setNotification({
-      variant: 'danger',
-      body: `Sending the ${row.name} failed`
-    })
-  }
-
-  /** Send record to relevant employees */
-  const sendRecord = () => {
-    const record = recordType(row)
-    return fetch(`/${record}/confirm/${row.id}`, {
-      method: "GET",
-    })
   }
 
   return (

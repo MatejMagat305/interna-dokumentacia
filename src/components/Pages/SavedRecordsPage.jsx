@@ -37,10 +37,12 @@ const SavedRecordsPage = () => {
         setForm={setForm}
         trainings={trainings}
       />
-      <EditRecordModal
-        form={form}
-        setForm={setForm}
-      />
+      {form &&
+        <EditRecordModal
+          form={form}
+          setForm={setForm}
+        />
+      }
     </>
   );
 };

@@ -63,14 +63,6 @@ export const setOf = (array) => {
   return set // array of unique objects by their .value
 }
 
-export const prefillDocumentForm = (data) => {
-  return {
-    ...data,
-    release_date: getDateString(data.release_date),
-    deadline: getDateString(data.deadline),
-  }
-}
-
 export const getCombinationsLabels = (combinations) => { // TODO ME
   const c = combinations.split('&').map(e => e.split(','))
   console.log(c)
@@ -85,15 +77,34 @@ export const getCombinationsLabels = (combinations) => { // TODO ME
     division: [{ value: 'Da1', label: 'B2' }],
     department: [{ value: 'Da1', label: 'B2' }],
     city: [{ value: 'C2', label: 'C2'}],
-    }]
+  }]
 }
 
-export const prefillTrainingForm = (data, attendees=null) => {
+export const withId = (data) => {
+  return Object.keys(data).includes('id')
+}
+
+export const prefillDocumentForm = (data) => {
+  if (!data) return {}
+  // if (withId(data)) {
+  //   data = {...data, id: data.id}
+  // }
+  return {
+    ...data,
+    release_date: getDateString(data.release_date),
+    deadline: getDateString(data.deadline),
+  }
+}
+
+export const prefillTrainingForm = (data) => {
+  if (!data) return {}
+  // if (withId(data)) {
+  //   data = {...data, id: data.id}
+  // }
   return {
     ...data,
     date: getDateString(data.date),
     deadline: getDateString(data.deadline),
-    // employees: attendees.map(a => a.id).join(',')
   }
 }
 

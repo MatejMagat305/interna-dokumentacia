@@ -1,8 +1,6 @@
 import React, {useEffect, useState} from "react";
 import BootstrapTable from 'react-bootstrap-table-next';
 import EditBtn from "../Buttons/EditBtn";
-import DocumentForm from "../Forms/DocumentForm";
-import TrainingForm from "../Forms/TrainingForm";
 import EditRecordModal from "../Modals/EditRecordModal";
 import ReportBtn from "../Buttons/ReportBtn";
 import {fitBtn, orderBy} from "../../helpers/functions";
@@ -11,8 +9,7 @@ import {FormattedRelease} from "../Others/Formatter";
 
 const FoundRecords = ({filter, docs, setDocs, combs}) => {
 
-  const [formType, setFormType] = useState('');
-  const [formData, setFormData] = useState({});
+  const [form, setForm] = useState();
 
   useEffect(() => {
     if(docs.length > 0 && combs.length > 0) {
@@ -64,8 +61,7 @@ const FoundRecords = ({filter, docs, setDocs, combs}) => {
     text: 'Edit',
     formatter: EditBtn,
     formatExtraData: {
-      setFormType: setFormType,
-      setFormData: setFormData
+      setForm: setForm,
     },
     headerStyle: fitBtn()
   }, {
@@ -88,11 +84,11 @@ const FoundRecords = ({filter, docs, setDocs, combs}) => {
         wrapperClasses="table-responsive"
         rowClasses="text-nowrap"
       />
-      {formType !== '' &&
+      {form &&
         <EditRecordModal
-          formData={formData}
-          formType={formType}
-          setFormType={setFormType}
+          form={form}
+          setForm={setForm}
+          actual={true}
         />
       }
     </>

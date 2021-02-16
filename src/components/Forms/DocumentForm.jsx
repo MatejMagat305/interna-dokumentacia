@@ -11,22 +11,21 @@ import {
   correctDocumentFormData,
   getSelectOptions,
   prefillDocumentForm,
-  successResponse, getCombinationsLabels
+  successResponse, getCombinationsLabels, withId
 } from "../../helpers/functions";
 
-const DocumentForm = ({formData, insertRecord}) => {
+const DocumentForm = ({formData, actual}) => {
   const {register, handleSubmit, errors} = useForm({
-    defaultValues: prefillDocumentForm(doc_form)
-    // defaultValues: prefillDocumentForm(formData)
+    // defaultValues: prefillDocumentForm(doc_form)
+    defaultValues: prefillDocumentForm(formData)
   });
 
   const [types, setTypes] = useState([]);
   const [notification, setNotification] = useState();
   const [combinations, setCombinations] = useState(
-    // []
-    getCombinationsLabels(doc_form.assigned_to)
+    []
+    // getCombinationsLabels(doc_form.assigned_to)
   );
-  console.log(combinations)
   const [emptyCombinations, setEmptyCombinations] = useState([true])
   useEffect(() => setNotification(undefined), emptyCombinations)
   useEffect(() => {
@@ -40,32 +39,71 @@ const DocumentForm = ({formData, insertRecord}) => {
     }
 
     data = correctDocumentFormData(data, combinations)
-    console.log(data)
+    console.log('FormData', data)
     const action = event.target.id
-    // const result = handleDatabase('/document', data, action)
 
-    fetch(`/document/update`, {
+    if (action === "save")
+      if (formData) {
+        data = {...data, id: formData.id}
+        upsert(data, 'update')
+      } else {
+        upsert(data, 'create') // TODO po uspesnom by sa malo pridat do data id
+      }
+    if (action === "send"){
+      if (formData) {
+        data = {...data, id: formData.id}
+        if (actual) {
+          upsertConfirm(data, 'update/confirm')
+        } else {
+          upsertConfirm(data, 'confirm')
+        }
+      } else {
+        upsertConfirm(data, 'create/confirm')
+      }
+    }
+  }
+
+  const upsert = (data, action) => {
+    fetch(`/document/${action}`, {
       method: "POST",
       body: JSON.stringify(data)
     })
       .then(res => {
         if (successResponse(res)) {
           setNotification(goodMsg(`${action} was successful`))
-          // reset({})
         } else {
           setNotification(badMsg(`${action} failed`))
         }
-      })
-      .catch((e) => console.log('error', e))
+      }).catch((e) => console.log('error', e))
+  }
+
+  const upsertConfirm = (data, action) => {
+    fetch(`/${action}/confirm/`, {
+      method: "POST",
+      body: JSON.stringify(data)
+    }).then(res => {
+      if (successResponse(res)) {
+        setNotification(goodMsg(`${action} was successful`))
+      } else {
+        setNotification(badMsg(`${action} failed`))
+      }
+    }).catch((e) => console.log('error', e))
   }
 
   return (
     <Form onChange={()=>setNotification(undefined)}>
+      {/*/!* ID *!/*/}
+      {/*<Form.Control*/}
+      {/*  hidden*/}
+      {/*  name="id"*/}
+      {/*  ref={register()}*/}
+      {/*/>*/}
        {/* TYPE OF DOCUMENT */}
       <Form.Group as={Row}>
         <Form.Label column sm="3">Type*</Form.Label>
         <Col>
           <Form.Control as="select" name="type" ref={register({validate: v => v !== ""})}>
+            <option hidden>Select option ...</option>
             {getSelectOptions(types)}
           </Form.Control>
         </Col>
@@ -151,7 +189,7 @@ const DocumentForm = ({formData, insertRecord}) => {
       {/* SAVE | SEND BUTTONS */}
       <div onClick={handleSubmit(onSubmit)} className="pt-1 btn-block text-right">
         <Button id="save" type="submit" className="mr-1">Save</Button>
-        <Button id="send" type="submit" variant="danger">Send</Button>
+        <Button id="send" type="submit" variant="danger">{actual ? 'Send as new version' : 'Send'}</Button>
       </div>
     </Form>
   )

@@ -41,6 +41,7 @@ const date = {
 }
 
 export const doc_form = {
+  id: "",
   name: "xxx",
   link: "linka",
   order_number: 1,
@@ -145,30 +146,30 @@ export const sm_data = [
 
 export const combinations = [
   {
-  branch: [{ value: 'A1', label: 'A1' }],
-  division: [{ value: 'D1', label: 'B2' }],
-  department: [{ value: 'D1', label: 'B2' }],
-  city: [{ value: 'C1', label: 'B2' }],
+  branch: { value: 'A1', label: 'A1' },
+  division: { value: 'D1', label: 'B2' },
+  department: { value: 'D1', label: 'B2' },
+  city: { value: 'C1', label: 'B2' },
 },{
-  branch: [{ value: 'A1', label: 'A1' }],
-  division: [{ value: 'Da1', label: 'B2' }],
-  department: [{ value: 'Da1', label: 'B2' }],
-  city: [{ value: 'C2', label: 'C2'}],
+  branch: { value: 'A1', label: 'A1' },
+  division: { value: 'Da1', label: 'B2' },
+  department: { value: 'Da1', label: 'B2' },
+  city: { value: 'C2', label: 'C2'},
 },{
-  branch: [{ value: 'B2', label: 'B2' }],
-  division: [{ value: 'D1', label: 'B2' }],
-  department: [{ value: 'D2', label: 'B2' }],
-  city: [{ value: 'C3', label: 'C3' }],
+  branch: { value: 'B2', label: 'B2' },
+  division: { value: 'D1', label: 'B2' },
+  department: { value: 'D2', label: 'B2' },
+  city: { value: 'C3', label: 'C3' },
 },{
-  branch: [{ value: 'B13', label: 'B1' }],
-  division: [{ value: 'D13', label: 'B2' }],
-  department: [{ value: 'D13', label: 'B2' }],
-  city: [{ value: 'C13', label: 'B2' }],
+  branch: { value: 'B13', label: 'B1' },
+  division: { value: 'D13', label: 'B2' },
+  department: { value: 'D13', label: 'B2' },
+  city: { value: 'C13', label: 'B2' },
 },{
-  branch: [{ value: 'B14', label: 'B1' }],
-  division: [{ value: 'D14', label: 'B2' }],
-  department: [{ value: 'D14', label: 'B2' }],
-  city: [{ value: 'C14', label: 'B2' }],
+  branch: { value: 'B14', label: 'B1' },
+  division: { value: 'D14', label: 'B2' },
+  department: { value: 'D14', label: 'B2' },
+  city: { value: 'C14', label: 'B2' }
 }
 ];
 

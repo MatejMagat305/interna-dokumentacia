@@ -1,41 +1,34 @@
-import React, {useEffect, useState} from 'react';
-import { BrowserRouter as Router, Switch, Route, withRouter } from "react-router-dom";
+import React, {useEffect} from 'react';
+import {BrowserRouter as Router, Switch, Route, withRouter} from "react-router-dom";
 import {Redirect} from "react-router";
 
 import './App.css';
 import LoginPage from "./components/Pages/LoginPage.jsx";
 import Navigation from "./components/Others/Navigation.jsx";
-import MissedRecordsPage from "./components/Pages/MissedRecordsPage.jsx";
+import RecordsToSignPage from "./components/Pages/RecordsToSignPage.jsx";
 import SignedRecordsPage from "./components/Pages/SignedRecordsPage.jsx";
-import SkillMatrixPage from "./components/Pages/SkillMatrixPage.jsx";
 import AddRecordPage from "./components/Pages/AddRecordPage.jsx";
 import FinderPage from "./components/Pages/FinderPage.jsx";
 import SettingsPage from "./components/Pages/SettingsPage.jsx";
 import LogoutPage from "./components/Pages/LogoutPage";
-import {isAdmin, getUser, removeUser} from "./functions";
+import {isAdmin, getUser, removeUser} from "./helpers/functions";
 import Container from "react-bootstrap/Container";
-import IdleTimer from "./IdleTimer";
-import { useHistory } from "react-router-dom";
+import IdleTimer from "./helpers/IdleTimer";
+import SavedRecordsPage from "./components/Pages/SavedRecordsPage";
 
 function App() {
 
   const user = getUser();
   const admin = isAdmin();
-  const history = useHistory();
 
-  const [isTimeout, setIsTimeout] = useState(false);
   useEffect(() => {
     const timer = new IdleTimer({
-      timeout: 300, //expire after 10 seconds
+      timeout: 60*10, // expire after 10 minutes
       onTimeout: () => {
-        setIsTimeout(true);
-      },
-      onExpired: () => {
-        // FIXME Redirect
-        console.log("end of session")
-        removeUser()
-        // history.push("/")
-        setIsTimeout(true);
+        if (user !== null){
+          removeUser()
+          window.location.reload(false);
+        }
       }
     });
 
@@ -44,39 +37,41 @@ function App() {
     };
   }, []);
 
-  const Private = ({ component: Component, ...rest }) => (
+  const Private = ({ component: Component, ...rest }) => {
     // Show the component only when the user is logged in
-    // Otherwise, redirect the user to /login page
-    <Route {...rest} render={props => (user !== null
-        ? <Component {...props} />
-        : <Redirect to="/" />
-        )}
-    />
-  )
+    // Otherwise, redirect the user to login page
+    return (
+      <>
+        {user !== null ? <Route {...rest} render={props => <Component {...props} />} />
+          : <Redirect to="/" />
+        }
+      </>
+    )
+  }
 
   const NavWithRouter = withRouter(Navigation); // get page with location
 
   return (
     <Router>
-      <>
         <NavWithRouter/>
         <Container>
           <Switch>
             <Route path='/' exact component={LoginPage} />
             <Route path='/logout' exact component={LogoutPage} />
-            <Private path="/missed-docs" component={MissedRecordsPage}/>
-            <Private path="/signed-docs" component={SignedRecordsPage} />
+            <Private path="/records-to-sign" component={RecordsToSignPage}/>
+            <Private path="/signed-records" component={SignedRecordsPage} />
             {admin &&
               <>
-              <Private path="/skill-matrix" component={SkillMatrixPage} />
-              <Private path="/add-record" component={AddRecordPage} />
-              <Private path="/finder" component={FinderPage} />
-              <Private path="/settings" component={SettingsPage} />
+                <Private path="/add-record" component={AddRecordPage}/>
+                <Private path="/saved-record" component={SavedRecordsPage}/>
+                <Private path="/settings" component={SettingsPage}/>
               </>
             }
           </Switch>
         </Container>
-      </>
+        <div className="large-container">
+          {admin && <Private path="/finder" component={FinderPage}/>}
+        </div>
     </Router>
   );
 }

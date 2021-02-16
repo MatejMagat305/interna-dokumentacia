@@ -1,9 +1,9 @@
 import React from "react";
 import {useForm} from "react-hook-form";
 import {Button, ButtonGroup, Form, Container} from "react-bootstrap";
-import {ErrorAlert} from "../Others/ErrorAlert";
+import {CustomAlert} from "../Others/CustomAlert";
 
-const LoginForm = ({onSubmit, language, setLanguage, loginError}) => {
+const LoginForm = ({onSubmit, language, setLanguage, notification}) => {
 
   const {register, handleSubmit} = useForm();
 
@@ -24,10 +24,10 @@ const LoginForm = ({onSubmit, language, setLanguage, loginError}) => {
         </ButtonGroup>
         {/* NAME */}
         <Form.Group>
-          <Form.Label>Name</Form.Label>
+          <Form.Label>Email</Form.Label>
           <Form.Control
-            name="login"
-            placeholder="Enter login name"
+            name="email"
+            placeholder="Enter email"
             ref={register}
             required
           />
@@ -38,13 +38,13 @@ const LoginForm = ({onSubmit, language, setLanguage, loginError}) => {
           <Form.Control
             name="password"
             type="password"
-            placeholder="Enter login password"
+            placeholder="Enter password"
             ref={register}
             required
           />
         </Form.Group>
-        {/* ERRORS */}
-        { loginError && <ErrorAlert text={loginError}/> }
+        {/* ALERT */}
+        {notification && <CustomAlert notification={notification}/>}
         {/* SUBMIT BTN */}
         <Button type="submit" variant="dark" className="btn-block">Login</Button>
       </Form>

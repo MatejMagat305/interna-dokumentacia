@@ -1,33 +1,39 @@
 import React from 'react';
 import {Navbar, Nav, NavLink} from 'react-bootstrap';
-import {getUser, isAdmin} from "../../functions";
+import {getLanguage, getUser, isAdmin} from "../../helpers/functions";
+import {wording} from "../../helpers/wording";
 
 const Navigation = ({location}) => {
 
   const user = getUser();
-  const admin = isAdmin(); // TODO session user.admin
+  const admin = isAdmin();
+
+  const language = getLanguage()
+  let x = language === 'sk' ? wording.sk : wording.en
+  x = x.navigation
+  console.log(x)
 
   const LoginNav = () => {
     return (
       <>
-        <NavLink href="/missed-docs">Missed Records</NavLink>
-        <NavLink href="/signed-docs">Signed records</NavLink>
+        <NavLink href="/records-to-sign">{x.recordsToSign}</NavLink>
+        <NavLink href="/signed-records">{x.signedRecords}</NavLink>
         {admin &&
           <>
-          <NavLink href="/skill-matrix">SkillMatrix</NavLink>
-          <NavLink href="/add-record">Add Record</NavLink>
-          <NavLink href='/finder'>Finder</NavLink>
-          <NavLink href='/settings'>Settings</NavLink>
+          <NavLink href="/add-record">{x.addRecord}</NavLink>
+          <NavLink href="/saved-record">{x.savedRecords}</NavLink>
+          <NavLink href='/finder'>{x.finder}</NavLink>
+          <NavLink href='/settings'>{x.settings}</NavLink>
           </>
         }
-        <NavLink href='/logout'>Log out</NavLink>
+        <NavLink href='/logout'>{x.logout}</NavLink>
       </>
     )
   };
 
   const LogoutNav = () => {
     return (
-      <NavLink href='/'>Sing in</NavLink>
+      <NavLink href='/'>{x.login}</NavLink>
     )
   };
 
@@ -42,7 +48,7 @@ const Navigation = ({location}) => {
           className="d-inline-block align-top"
         />
       </Navbar.Brand>
-      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+      <Navbar.Toggle/>
       <Navbar.Collapse id="responsive-navbar-nav">
       <Nav className="ml-auto" variant="pills" activeKey={location.pathname}>
         {user !== null ? <LoginNav/> : <LogoutNav/>}

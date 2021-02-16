@@ -4,7 +4,7 @@ import React from "react";
 const ReportBtn = (cell, row) => {
 
   const handleClick = () => {
-    console.log('Show SM') // TODO JANO implement me
+    console.log('Show SM') // TODO ME implement me
   }
 
   return(

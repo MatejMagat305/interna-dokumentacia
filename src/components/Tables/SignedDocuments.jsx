@@ -2,45 +2,73 @@ import React from "react";
 import BootstrapTable from 'react-bootstrap-table-next';
 import CaptionElement from "../Others/CaptionElement";
 import {SignedBtn} from "../Buttons/TableBtns";
-import {nonExpandableDocs} from "../../functions";
+import {nonExpandableDocs, orderBy} from "../../helpers/functions";
 import EmptyTable from "./EmptyTable";
+import {
+  FormattedEmployeeDate,
+  FormattedRelease,
+  FormattedSuperiorDate,
+  FullName,
+  NameWithLink
+} from "../Others/Formatter";
 
 const SignedDocuments = ({documents}) => {
 
+  console.log('documents', documents)
   const columns = [{
-      dataField: 'name',
-      text: 'Name'
-    }, {
-      dataField: 'release',
-      text: 'Release'
-    }, {
-      dataField: 'sign',
-      text: 'Sign Day',
-      formatter: SignedBtn
-    }
-  ];
+    dataField: 'name',
+    text: 'Name',
+    sort: true,
+    formatter: NameWithLink
+  }, {
+    dataField: 'release_date.Time',
+    text: 'Release',
+    // align: 'center',
+    // headerAlign: 'center',
+    sort: true,
+    formatter: FormattedRelease
+  }, {
+    dataField: 'signatures[0].e_date.Time',
+    text: 'Signed date',
+    // align: 'right',
+    // headerAlign: 'right',
+    sort: true,
+    formatter: SignedBtn
+  }];
 
-  const expandColumns = [{
-      dataField: 'anet_id',
-      text: 'AnetID'
-    }, {
-      dataField: 'name',
-      text: 'Name'
-    }, {
-      dataField: 'sign',
-      text: 'Sign Day'
-    }
-  ];
+const expandColumns = [{
+    dataField: 'employee.id',
+    text: 'Employee ID',
+    sort: true
+  }, {
+    dataField: 'employee.last_name',
+    text: 'Full name',
+    sort: true,
+    formatter: FullName
+  }, {
+    dataField: 'e_date.Time',
+    text: 'Employee Sign',
+    sort: true,
+    formatter: FormattedEmployeeDate
+  },{
+    dataField: 's_date.Time',
+    text: 'My Sign',
+    sort: true,
+    formatter: FormattedSuperiorDate
+  }];
 
   const expandRow = {
+    onlyOneExpanding: true,
     nonExpandable: nonExpandableDocs(documents),
-    renderer: (cell, row) => (
+    renderer: (cell) => (
       <BootstrapTable
         keyField="id"
+        classes="inner-table"
         hover
-        data={documents[row].sub}
-        bordered={ false }
-        columns={expandColumns}/>
+        data={cell.signatures}
+        columns={expandColumns}
+        defaultSorted={orderBy('employee.last_name')}
+      />
     )
   };
 
@@ -54,6 +82,7 @@ const SignedDocuments = ({documents}) => {
         columns={columns}
         expandRow={expandRow}
         noDataIndication={EmptyTable}
+        defaultSorted={orderBy('release_date.Time', 'desc')}
       />
     </>
   );

@@ -5,7 +5,7 @@ const MyHookForm = ({label, name, placeholder, type, register, as, defaultValue,
 
   return (
     <Form.Group as={Row}>
-      <Form.Label column sm="2">{label}</Form.Label>
+      <Form.Label column sm="3">{label}</Form.Label>
       <Col>
         <Form.Control
           name={name}

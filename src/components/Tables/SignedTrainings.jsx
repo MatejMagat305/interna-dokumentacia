@@ -1,37 +1,41 @@
-import React, {useState} from "react";
+import React from "react";
 import BootstrapTable from "react-bootstrap-table-next";
-import {MissedBtn} from "../Buttons/TableBtns";
 import CaptionElement from "../Others/CaptionElement";
-import ConfirmModal from "../Modals/ConfirmModal";
 import EmptyTable from "./EmptyTable";
+import {FormattedDate, FormattedTrainingDate} from "../Others/Formatter";
+import {orderBy} from "../../helpers/functions";
 
-const MissedTrainings = ({trainings}) => {
+const SignedTrainings = ({trainings}) => {
 
-  const columns = [
-    {
-      dataField: 'name',
-      text: 'Name'
-    }, {
-      dataField: 'took_place',
-      text: 'Took place'
-    }, {
-      dataField: 'signed_date',
-      text: 'Signed date'
-    }
-  ];
+  const columns = [{
+    dataField: 'name',
+    text: 'Name',
+    sort: true
+  }, {
+    dataField: 'date.Time',
+    text: 'Took place',
+    sort: true,
+    formatter: FormattedDate
+  }, {
+    dataField: 'signatures[0].date.Time', // always array with length of 1 [by SQL query]
+    text: 'Signed date',
+    sort: true,
+    formatter: FormattedTrainingDate
+  }];
 
   return (
     <>
-      <CaptionElement title="Trainings to sign"/>
+      <CaptionElement title="Signed Trainings"/>
       <BootstrapTable
         keyField="id"
         hover
         data={trainings}
         columns={columns}
         noDataIndication={EmptyTable}
+        defaultSorted={orderBy('date.Time', 'desc')}
       />
     </>
   )
 }
 
-export default MissedTrainings;
+export default SignedTrainings;

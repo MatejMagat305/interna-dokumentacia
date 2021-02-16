@@ -1,17 +1,17 @@
-// TODO JOZO
+// JOZO
 - čítačka
 - preloziť web
 - nakodit stránku setting
 - spravit dynamický selector
 
-// TODO PATO
+// PATO
 - spustiť web na serveri
 - spravit triedny diagram
 - spraviť import a export
 - spraviť report pre záznam
 - dopisat a aplikovat testovacie scenáre
 
-// TODO MATO
+// MATO
 - CRUD
 - zamysliet sa nad bezpecnostou
 - tiež otestovať web cez scenáre

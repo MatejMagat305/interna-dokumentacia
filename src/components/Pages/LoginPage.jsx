@@ -2,42 +2,62 @@ import React, {useEffect, useState} from "react";
 import {Redirect} from "react-router";
 import useSessionStorage from "@rooks/use-sessionstorage";
 import LoginForm from "../Forms/LoginForm";
-import { useHistory } from "react-router-dom";
-import {proxy} from "../../data";
+import {getUser} from "../../helpers/functions";
 
 const LoginPage = () => {
 
-  const history = useHistory();
-
   const [language, setLanguage] = useSessionStorage("language", "sk");
-  const [user, setUser] = useSessionStorage("user", undefined);
-  const [loginError, setLoginError] = useState("");
+  const [notification, setNotification] = useState();
 
-  let time = 0;
-  let lastInput = '';
   let cardInput = '';
-  const isCardInput = () => Date.now() - time < 30
+  const maxCardInputTimeDifference = 40;
+  const cardInputLength = 10;
+  let t = cardInputTimeout();
+  clearTimeout(t);
+
+  function cardInputTimeout() {
+    return setTimeout(checkInput, maxCardInputTimeDifference);
+  }
+
+  function isLetter(e) {
+    let aKeycode = 65;
+    let zKeycode = 90;
+
+    return e.keyCode >= aKeycode && e.keyCode <= zKeycode
+  }
+
+  function isNumber(e) {
+    let zeroKeycode = 48;
+    let nineKeycode = 57;
+
+    return e.keyCode >= zeroKeycode && e.keyCode <= nineKeycode
+  }
+
+  function isValiable(e) {
+    return isLetter(e) || isNumber(e)
+  }
+
+  function emptyCardInput() {
+    cardInput = '';
+  }
+
+  function checkInput() {
+    if(cardInput.length === cardInputLength) {
+      console.log(`checking card ${cardInput}`);
+      findByCard(cardInput);
+    } else {
+      console.log('emptying input');
+    }
+    emptyCardInput();
+  }
 
   const event = (e) => {
-    console.log(`keyPressed ${e.key}`)
-
-    if(isCardInput()) {
-      if(lastInput !== '') {
-        cardInput = lastInput;
-        lastInput = '';
-      }
-      cardInput += e.key;
-      findByCard(cardInput);
-      if(user !== undefined) {
-        console.log('Found Employee', user);
-      }
-    } else {
-      cardInput = '';
-      lastInput = e.key;
+    let engInput = String.fromCharCode(e.keyCode).toLowerCase()
+    if(isValiable(e)) {
+      cardInput += engInput;
+      clearTimeout(t);
+      t = cardInputTimeout();
     }
-
-    time = Date.now();
-    console.log('cardInput', cardInput);
   }
 
   useEffect(() => {
@@ -45,53 +65,52 @@ const LoginPage = () => {
     return () => document.removeEventListener("keydown", event); // cleanup
   })
 
-  const onSubmit = (data) =>{
-    fetchLoginByPass(data)
+  const setLoginError = (body) => {
+    setNotification({
+      variant: 'danger',
+      body: body
+    })
   }
 
-  const findByCard = (input) => {
-    // TODO MATO find employee with cardID
-    fetchLoginByCard(input)
+  const setUser = (data) => {
+    const user = {
+      id: data.id,
+      role: data.role
+    }
+    sessionStorage.setItem('user', JSON.stringify(user))
+    window.location.reload(false);
   }
 
-  const fetchLoginByPass = (data) => {
-    fetch(`${proxy}/login`, {
+  const onSubmit = (data) => {
+    fetch('/login', {
       method: "POST",
-      body: new URLSearchParams(`login=${data.login}&password=${data.password}`)
+      body: new URLSearchParams(`email=${data.email}&password=${data.password}`)
     })
       .then(response => response.json())
-      .then(res => {
-        setUser({id: res.id, role: res.role})
-        history.push("/")
-      })
+      .then(data => { setUser(data) })
       .catch(() => setLoginError("Wrong login input"))
   }
 
-  const fetchLoginByCard = (input) => {
-    fetch(`${proxy}/kiosk`, {
+  const findByCard = (input) => {
+    fetch('/kiosk', {
       method: "POST",
       body: new URLSearchParams(`card=${input}`)
     })
       .then(response => response.json())
-      .then(res => {
-        setUser({id: res.id, role: res.role})
-        history.push("/")
-      })
+      .then(data => { setUser(data) })
       .catch(() => setLoginError("Wrong card input"))
   }
 
+  if (getUser() !== null)
+    return <Redirect to="/records-to-sign"/>
+
   return (
-    <>
-      {user !== null
-        ? <Redirect to="/missed-docs"/>
-        : <LoginForm
-            onSubmit={onSubmit}
-            language={language}
-            setLanguage={setLanguage}
-            loginError={loginError}
-          />
-      }
-    </>
+    <LoginForm
+      onSubmit={onSubmit}
+      language={language}
+      setLanguage={setLanguage}
+      notification={notification}
+    />
   )
 };
 

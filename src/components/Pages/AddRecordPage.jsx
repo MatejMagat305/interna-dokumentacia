@@ -2,31 +2,84 @@ import React, {useState} from 'react';
 import {Button, ButtonGroup, Container} from 'react-bootstrap';
 import DocumentForm from "../Forms/DocumentForm";
 import TrainingForm from "../Forms/TrainingForm";
-import SavedRecords from "../Tables/SavedRecords";
+import {successResponse} from "../../helpers/functions";
 
 const AddRecordPage = () => {
 
-  const [formType, setFormType] = useState('new_document');
-  const [formData, setFormData] = useState({});
+  const [formType, setFormType] = useState('document');
+  const [status, setStatus] = useState();
 
   const handleClick = (event) => {
     setFormType(event.target.id)
   };
 
+  const handleDatabase = (type, data, action) => {
+    let id
+    if (true) {
+      insertRecord(type, data) // TODO insert
+    } else {
+      id = updateRecord(type, data) // TODO update
+    }
+    if (action === "send"){
+      sendRecord(type, id) // TODO send
+    }
+    return status
+  }
+
+  const insertRecord = (record, data) => { // TODO test
+    console.log('data', data)
+    return fetch(`/${record}/create`, {
+      method: "POST",
+      body: JSON.stringify(data)
+    })
+  }
+
+  const sendRecord = (record, id) => { // TODO test
+    return fetch(`/${record}/confirm/`, {
+      method: "POST",
+      body: new URLSearchParams(`${record}=${id}`)
+    })
+      .then(response => response.json())
+      .then(res => {
+        console.log(res)
+        return res;
+      })
+      .catch((e) => console.log(e))
+  }
+
+  const updateRecord = (record, data, id) => { // TODO
+    return fetch(`/${record}/update`, {
+      // ...
+    })
+  }
+
+  // const successMsg = () => {
+  //   setNotification({
+  //     variant: 'success',
+  //     body: `Record ${row.name} was successfully sent`
+  //   })
+  // }
+  //
+  // const errorMsg = () => {
+  //   setNotification({
+  //     variant: 'danger',
+  //     body: `Sending the ${row.name} failed`
+  //   })
+  // }
+
   const active = id => formType === id && 'active'
 
   return (
-    <Container className="w-80">
+    <Container className="w-75">
       <ButtonGroup onClick={handleClick} className="btn-group btn-header">
-        <Button id="new_document" className={active("new_document")}>Document</Button>
-        <Button id="new_training" className={active("new_training")}>Online training</Button>
-        <Button id="editable_docs" className={active("editable_docs")}>Saved records</Button>
+        <Button id="document" className={active("document")}>Document</Button>
+        <Button id="training" className={active("training")}>Online training</Button>
       </ButtonGroup>
-      {formType === 'new_document'
-        ? <DocumentForm data={formData}/>
-        : formType === 'new_training'
-          ? <TrainingForm data={formData}/>
-          : <SavedRecords setFormType={setFormType} setFormData={setFormData}/>
+      {formType === 'document' && // if
+        <DocumentForm insertRecord={insertRecord}/>
+      }
+      {formType === 'training' && // elif
+        <TrainingForm handleDatabase={handleDatabase}/>
       }
     </Container>
   )
